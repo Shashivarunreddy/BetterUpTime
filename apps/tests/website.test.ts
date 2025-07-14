@@ -8,7 +8,6 @@ describe("Website gets created", () => {
   it("website not created if url is not present", async()=>{
     try{
       await axios.post(`${BASE_URL}/website`, {
-
       });
       expect(false, "Website created when it should not have");
     } catch(e){
@@ -16,12 +15,12 @@ describe("Website gets created", () => {
     }
   })
  
-  it("website created if url is present", async()=>{
+  it("website created if url is present", async()=> {
     const response = await axios.post(`${BASE_URL}/website`, {
       url: "https://example.com"
     });
     
-    expect(response.data.id).toBeNull();
+    expect(response.data.id).not.toBeNull();
   });
 
 
