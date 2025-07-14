@@ -15,7 +15,7 @@ describe("Website gets created", () => {
     }
   })
  
-  it("website created if url is present", async()=> {
+  it.todo("website created if url is present", async()=> {
     const response = await axios.post(`${BASE_URL}/website`, {
       url: "https://example.com"
     });

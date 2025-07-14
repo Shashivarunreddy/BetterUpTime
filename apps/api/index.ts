@@ -3,11 +3,12 @@ import express from 'express';
 const app = express();
 import { prismaClient } from "store/client";
 import { AuthInput } from './types';
+import { authMiddleware } from './middleware';
 
 
 app.use(express.json());
 
-app.post("/website" ,async (req,res) => {
+app.post("/website" , authMiddleware ,async (req,res) => {
 
     if(!req.body.url){
       res.status(411).json({
@@ -29,7 +30,7 @@ app.post("/website" ,async (req,res) => {
 
 });
 
-app.get("/status/:websiteId" , (req, res) =>{
+app.get("/status/:websiteId" , authMiddleware , (req, res) =>{
     
 });
 
