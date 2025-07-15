@@ -31,9 +31,34 @@ app.post("/website" , authMiddleware ,async (req,res) => {
 });
 
 app.get("/status/:websiteId" , authMiddleware , (req, res) =>{
-    
-});
+    const website = prismaClient.website.findFirst({
+      where:{
+        user_id: req.userId,
+        id: req.params.websiteId,
+      },
+      include:{
+        ticks:{
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1
+        }
+      }
+    })
 
+    if (!website) {
+      res.status(409).json({
+        message:"Website not found"
+      })
+      return;
+    }
+
+    res.json({
+      website
+    })
+
+
+});
 
 app.post("/user/signup", async (req, res) => {
   const data = AuthInput.safeParse(req.body);
@@ -59,7 +84,6 @@ app.post("/user/signup", async (req, res) => {
     res.status(403).send("User creation failed");
   }
 });
-
 
 app.post("/user/signin",async (req,res) =>{
    const data = AuthInput.safeParse(req.body);
