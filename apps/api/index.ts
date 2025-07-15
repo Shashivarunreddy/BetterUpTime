@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import express from 'express';
-const app = express();
 import { prismaClient } from "store/client";
 import { AuthInput } from './types';
 import { authMiddleware } from './middleware';
 
+const app = express();
 
 app.use(express.json());
 
@@ -17,10 +17,11 @@ app.post("/website" , authMiddleware ,async (req,res) => {
       return;
     }
  const website = await prismaClient.website.create({
-    data:{
+    data: {
       url: req.body.url,
-      user_id: req.body.userId,
-      timeAdded: new Date()
+      timeAdded: new Date(),
+      user_id: req.userId!
+      
     }
   })
 
@@ -30,8 +31,8 @@ app.post("/website" , authMiddleware ,async (req,res) => {
 
 });
 
-app.get("/status/:websiteId" , authMiddleware , (req, res) =>{
-    const website = prismaClient.website.findFirst({
+app.get("/status/:websiteId" , authMiddleware ,async (req, res) =>{
+    const website = await prismaClient.website.findFirst({
       where:{
         user_id: req.userId,
         id: req.params.websiteId,
@@ -79,7 +80,10 @@ app.post("/user/signup", async (req, res) => {
     res.json({
       id: user.id
     });
-  } catch (e) {
+  } catch (e: any) {
+    if (e.code === 'P2002') {
+      return res.status(409).send("Username already exists");
+    }
     console.error(e);
     res.status(403).send("User creation failed");
   }
