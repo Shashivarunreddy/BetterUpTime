@@ -1,0 +1,17 @@
+{
+  "name": "pusher",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "store" :"*",
+    "redisstreme": "*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
