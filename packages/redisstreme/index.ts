@@ -39,7 +39,7 @@ export async function xAddBulk(websites: WebsiteEvent[]){
 }
 
 
-export async function xReadGroup(consumerGroup: string , workerId: string): Promise<MessageType[]> {
+export async function xReadGroup(consumerGroup: string , workerId: string): Promise<MessageType[] | undefined> {
     const res = await client.xReadGroup(
         consumerGroup,
         workerId,
@@ -51,13 +51,16 @@ export async function xReadGroup(consumerGroup: string , workerId: string): Prom
         }
     );
     // @ts-ignore
-    let messages: MessageType[] = res?.[0]?.messages;
+    let messages: MessageType[] | undefined = res?.[0]?.messages;
     
-    return res;
+    return messages;
 }
 
 
-export async function xAck(consumerGroup: string, streamId: string) {
-  await client.xAck(STREAM_NAME, consumerGroup, streamId);
+export async function xAck(consumerGroup: string, eventId: string) {
+  await client.xAck(STREAM_NAME, consumerGroup, eventId);
 }
 
+export async function xAckBulk(consumerGroup: string, eventIds: string[]) {
+  eventIds.map(eventId => {xAck(consumerGroup, eventId);})
+}
