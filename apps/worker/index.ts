@@ -28,33 +28,33 @@ async function main() {
 
 async function fetchWebsite(url: string, websiteId: string) {
    return new Promise<void>((resolve, reject) => {
+        const startTime = Date.now();
 
-      const startTime = Date.now();
-      axios.get(url)
-        .then(async () => {
-          const endTime = Date.now();
-         await prismaClient.websiteTick.create({
-            data:{
-              response_time_ms: endTime - startTime,
-              status: "Up",
-              region_id: REGION_ID,
-              website_id: websiteId,
-            }
-          })
-          resolve();
-        })
-        .catch(async () => {
-          const endTime = Date.now();
-        await prismaClient.websiteTick.create({
-            data: {
-              response_time_ms: endTime - startTime,
-              status: "Down",
-              region_id: REGION_ID,
-              website_id: websiteId,
-            }
-          })
-          resolve();
-        })
-      })
+        axios.get(url)
+            .then(async () => { 
+                const endTime = Date.now();
+                await prismaClient.websiteTick.create({
+                    data: {
+                        response_time_ms: endTime - startTime,
+                        status: "Up",
+                        region_id: REGION_ID,
+                        website_id: websiteId
+                    }
+                })
+                resolve()
+            })
+            .catch(async () => {
+                const endTime = Date.now();
+                await prismaClient.websiteTick.create({
+                    data: {
+                        response_time_ms: endTime - startTime,
+                        status: "Down",
+                        region_id: REGION_ID,
+                        website_id: websiteId
+                    }
+                })
+                resolve()
+            })
+    })
 }
 main();
